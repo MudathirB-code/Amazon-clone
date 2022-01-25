@@ -2,6 +2,8 @@ import Image from "next/image"
 import { StarIcon } from '@heroicons/react/solid'
 import { useState } from "react"
 import NumberFormat from 'react-number-format';
+import { useDispatch } from "react-redux";
+import { addToBasket } from "../slices/basketSlice";
 
 
 const MAX_RATING = 5;
@@ -12,6 +14,22 @@ function Product({id, title, price, description, category, image}) {
         Math.floor(Math.random() * (MAX_RATING - MIN_RATING +1) + MIN_RATING)
     );
     const [hasPrime] = useState(Math.random() < 0.5)
+
+    const dispatch = useDispatch();
+
+    const addItemsToBasket = () =>{
+        const products = {
+            id, 
+            title, 
+            price, 
+            description, 
+            category, 
+            image,
+            hasPrime
+        }
+        dispatch(addToBasket(products))
+    }
+
     return (
         <div className="relative flex flex-col bg-white m-5 p-10 z-30">
             <p className="absolute top-2 right-2 text-xs italic text-gray-400">{category}</p>
@@ -39,7 +57,7 @@ function Product({id, title, price, description, category, image}) {
                     <p className="text-xs text-gray-500">Free Next-Day Delivery</p>
                 </div>
             )}
-            <button className="mt-auto button">Add to the Cart</button>
+            <button onClick={addItemsToBasket} className="mt-auto button">Add to the Cart</button>
         </div>
     )
 }

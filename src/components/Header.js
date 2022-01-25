@@ -1,11 +1,22 @@
 import Image from 'next/image'
-import { MenuIcon , SearchIcon , ShoppingCartIcon  } from '@heroicons/react/outline'
+import { MenuIcon , SearchIcon , ShoppingCartIcon , UserCircleIcon  } from '@heroicons/react/outline'
+import { signIn , signOut, useSession   } from 'next-auth/react'
+import { useRouter } from 'next/router'
+import { useSelector } from 'react-redux';
+import { selectItems } from '../slices/basketSlice';
+
 
 function Header() {
+
+    const { data : session } = useSession();
+    const router = useRouter();
+    
+    const items = useSelector(selectItems);
+
     return (
-        <header className=''>
+        <header className='sticky top-0 z-50'>
             <div className='bg-amazon_blue p-1 py-2 flex items-center flex-grow '>
-                <div className='flex mt-3 pr-4 items-center flex-grow sm:flex-grow-0 ml-2 cursor-pointer'>
+                <div onClick={() => router.push('/') } className='flex mt-3 pr-4 items-center flex-grow sm:flex-grow-0 ml-2 cursor-pointer'>
                     <Image src="https://links.papareact.com/f90" 
                         width={100}
                         height={40}
@@ -16,16 +27,25 @@ function Header() {
                     <SearchIcon className='h-9 p-2 cursor-pointer' />
                 </div>
                 <div className='text-white flex items-center text-sm space-x-4 mx-4 whitespace-nowrap'>
-                    <div className='link'>
-                        <p>Hello, Mudathir musa</p>
+                    <div onClick={!session ? signIn : signOut} className='link'>
+                        <p>
+                            {session ? `Hello, ${session.user.name}` : 'Sign In'}
+                        </p>
+                        <div className='flex items-center space-x-2'>
+                        <img className='object-contain rounded-full' 
+                            src={session ? session.user.image : <UserCircleIcon className='h-10 bg-red-500' />} 
+                            height={25} width={25} />
                         <p className='font-extrabold md:text-sm'>Account & Lists</p>
+                        </div>
                     </div>
                     <div className='link'>
                         <p>Returns</p>
                         <p className='font-extrabold md:text-sm'>& Orders</p>
                     </div>
-                    <div className='link flex items-center'>
-                        <span className='absolute top-0 right-5 mt-2 md:right-10 w-5 h-5 text-center rounded-full bg-yellow-500 text-black font-bold'>0</span>
+                    <div onClick={() => router.push('/checkOut')} className='link flex items-center'>
+                        <span className='absolute top-0 right-5 mt-2 md:right-10 w-5 h-5 text-center rounded-full bg-yellow-500 text-black font-bold'>
+                        {items.length}
+                        </span>
                         <ShoppingCartIcon className='h-10' />
                         <p className='hidden md:flex mt-4 font-extrabold md:text-sm'>Cart</p>
                     </div>

@@ -12,6 +12,7 @@ function ProductFeed({ products }) {
                     description={description}
                     category={category}
                     image={image}
+                    
                 />
             ))}
             
@@ -46,4 +47,4 @@ function ProductFeed({ products }) {
     )
 }
 
-export default ProductFeed
+export default ProductFeed;
